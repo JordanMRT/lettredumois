@@ -23,505 +23,402 @@
     color:#222;
   }
 
-  .stage{
-    width:90%;
-    max-width:900px;
-    padding:28px;
-    box-sizing:border-box;
+  .timeline-container {
+    position: relative;
+    width: 80%;
+    max-width: 900px;
+    height: 100px;
   }
 
-  .controls{
-    display:flex;
-    gap:12px;
-    justify-content:flex-end;
-    margin-bottom:10px;
+  /* Barre de progression */
+  .progress-bar-container {
+    width: 100%;
+    height: 40px;
+    background-color: #e8f5e9;
+    border-radius: 20px;
+    border: 1px solid #c8e6c9;
+    overflow: hidden;
+    position: relative;
+    margin-top: 20px;
+    z-index: 0;
   }
 
-  .control-note{ font-size:13px; color:#666; margin-right:auto; align-self:center;}
-
-  select, button { padding:6px 8px; border-radius:6px; border:1px solid #ccc; background:white; }
-
-  /* timeline wrapper */
-  .timeline {
-    position:relative;
-    width:100%;
-    height:140px; /* espace pour icônes/enveloppe */
-    display:block;
-    box-sizing:border-box;
+  .progress-bar-fill {
+    height: 100%;
+    width: 25%; /* valeur d'exemple, ajustable via JS */
+    background: linear-gradient(90deg, #ffcf98, #1b5e20);
+    transition: width 1s ease;
   }
 
-  /* centered progress bar container */
-  .progress-bar-wrapper{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    width:420px; /* taille fixe de la barre, changeable */
-    max-width:80%;
-    height:28px;
-    top:58px;
-  }
+  /* Mois */
+  .month-label {
+  position: absolute;
+  top: -30px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  
+  /* AJOUT IMPORTANT : Décale l'élément de 50% de sa propre largeur vers la gauche */
+  transform: translateX(-50%); 
+}
 
-  .progress-bar-container{
-    position:relative;
-    width:100%;
-    height:100%;
-    background:var(--bar-bg);
-    border-radius:999px;
-    border:1px solid rgba(0,0,0,0.06);
-    overflow:hidden;
-  }
+  /*.month-label::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    width: 1px;
+    height: 16px;
+    background: #888;
+    transform: translateX(-50%);
+  } */
 
-  .progress-bar-fill{
-    position:absolute;
-    left:0; top:0; bottom:0;
-    width:0%;
-    border-radius:999px;
-    background: linear-gradient(90deg, var(--bar-accent-a), var(--bar-accent-b));
-    transition: width 1.2s ease;
-  }
-
-  /* points for months - absolute relative to timeline (not the bar wrapper) */
-  .month-label{
-    position:absolute;
-    top:28px; /* label sits above the bar wrapper baseline */
-    transform:translate(-50%, -100%);
-    font-size:13px;
-    color:#333;
-    text-align:center;
-    pointer-events:none;
-    user-select:none;
-    width:60px;
-  }
-
-  .month-label::after{
-    content:'';
-    display:block;
-    margin:4px auto 0;
-    width:2px; height:12px;
-    background:#333;
-    border-radius:1px;
-  }
-
-  /* wrapper for inline SVG icon above the month name */
-  .month-svg-wrapper{
-    position:absolute;
-    top:6px; /* above month label baseline */
-    transform:translateX(-50%);
-    width:32px;
-    height:32px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:6;
-    pointer-events:none;
-  }
-
-  .month-svg-wrapper svg{
-    width:28px; height:28px;
-    display:block;
-    overflow:visible;
-    vector-effect: non-scaling-stroke;
-  }
-
-  /* envelope that appears for current month */
+  /* Enveloppe */
   .envelope {
-    position:absolute;
-    top:-8px;
-    transform:translateX(-50%) translateY(-6px);
-    font-size:28px;
-    z-index:7;
-    opacity:0;
-    transition:opacity .25s ease, transform .35s ease;
-    pointer-events:none;
-  }
-  .envelope.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(-16px);
-    animation:envBounce .9s ease;
-  }
-  @keyframes envBounce{
-    0%{ transform:translateX(-50%) translateY(-6px) scale(.95); }
-    50%{ transform:translateX(-50%) translateY(-22px) scale(1.05); }
-    100%{ transform:translateX(-50%) translateY(-16px) scale(1); }
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
   }
 
-  /* generic animation classes for inline svgs */
-  .float-slow { animation: floatSlow 3.5s ease-in-out infinite; transform-origin:center; }
-  .pulse-soft { animation: pulseSoft 2.6s ease-in-out infinite; transform-origin:center; }
-  .spin-slow { animation: spinSlow 6s linear infinite; transform-origin:center; }
+  /* Animation des SVG autour */
+  /* Par défaut, toutes les animations sont masquées */
+.month-animation {
+  position: absolute;
+  top: 20px;
+  left: -40%;
+  width: 0; /* L'élément a une largeur de 0, mais la transformation est toujours utile */
+  height: 0;
+  overflow: visible; 
+  opacity: 0;
+  transition: opacity 0.5s ease;
 
-  @keyframes floatSlow {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
+  /* AJOUT IMPORTANT : Centre le conteneur sur le point de référence (left: 50%) */
+  transform: translateX(-50%); 
+}
+
+/* Règle pour afficher l'animation du mois en cours */
+.month-animation.active-month {
+  opacity: 1;
+  z-index: 15;
+}
+
+  .month-animation svg {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform-origin: center;
+    opacity: 0.8;
+    z-index: 15;
   }
-  @keyframes pulseSoft {
-    0% { transform: scale(1); filter:brightness(1); }
-    50% { transform: scale(1.08); filter:brightness(1.12); }
-    100% { transform: scale(1); filter:brightness(1); }
-  }
-  @keyframes spinSlow {
-    0%{ transform: rotate(0deg); }
-    100%{ transform: rotate(360deg); }
+
+  /* Animations par type */
+  @keyframes snow {
+    0% { transform: translate(0,-20px) rotate(0deg); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) rotate(360deg); opacity:0; }
   }
 
-  /* month-specific micro-animations for decorative items (petals, stars, waves...) */
-  .dec-star { position:absolute; width:8px; height:8px; z-index:5; pointer-events:none;
-              clip-path: polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-              background:gold; opacity:0; animation:decFall 1.8s linear infinite; }
-  @keyframes decFall { 0%{ transform:translateY(0) rotate(0); opacity:1} 100%{ transform:translateY(48px) rotate(360deg); opacity:0} }
-
-  .mar-petal { position:absolute; width:8px; height:8px; border-radius:50%; background:#ff69b4; z-index:5; opacity:0; animation:petalFall 2.4s linear infinite; }
-  @keyframes petalFall { 0%{ transform:translateY(0) rotate(0) scale(.9); opacity:1} 100%{ transform:translateY(60px) rotate(60deg) scale(.8); opacity:0 } }
-
-  .janflake { position:absolute; width:8px; height:8px; background:#cfeeff; border-radius:2px; z-index:5; opacity:0; animation:flakeFall 2.8s linear infinite; }
-  @keyframes flakeFall { 0%{ transform:translateY(0) rotate(0); opacity:1 } 100%{ transform:translateY(70px) rotate(180deg); opacity:0 } }
-
-  .aug-wave { position:absolute; width:6px; height:20px; border-radius:3px; background:#7fd3ff; opacity:.8; transform-origin:center; animation:wavePulse 1.4s ease-in-out infinite;}
-  @keyframes wavePulse { 0%{ transform: translateY(0) scaleY(.8) } 50%{ transform: translateY(-6px) scaleY(1.1) } 100%{ transform: translateY(0) scaleY(.8) } }
-
-  /* small helpers */
-  .hidden{ display:none; }
-  .month-svg-wrapper.active svg { filter: drop-shadow(0 6px 8px rgba(0,0,0,0.08)); }
-
-  /* responsive */
-  @media (max-width:520px){
-    .progress-bar-wrapper{ width:320px; }
-    .month-label { font-size:12px; width:48px; }
+  @keyframes petals {
+    0% { transform: translate(0,0) rotate(0deg); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) rotate(360deg); opacity:0; }
   }
+
+  @keyframes hearts {
+    0% { transform: translate(0,0) scale(0); opacity:0; }
+    50% { opacity:1; scale (1); }
+    100% { transform: translate(var(--x), var(--y)) scale(1) ; opacity:0; }
+  }
+
+  @keyframes waves {
+    0% { transform: translate(0,0) rotate(0deg); opacity:1; }
+    50% { transform: translate(var(--x), var(--y)) rotate(15deg); }
+    100% { transform: translate(0,0) rotate(0deg); opacity:1; }
+  }
+
+  @keyframes leaves {
+    0% { transform: translate(0,0) rotate(0deg); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translate(var(--x), var(--y)) rotate(360deg); opacity:0; }
+  }
+
+  @keyframes stars {
+    0% { transform: translate(0,0) scale(0.5); opacity:0; }
+    50% { opacity:1; scale(1); }
+    100% { transform: translate(var(--x), var(--y)) scale(0.5); opacity:0; }
+  }
+
+  @keyframes sunbeams {
+    0% { transform: rotate(0deg) scale(0.8); }
+    50% { transform: rotate(180deg) scale(1); }
+    100% { transform: rotate(360deg) scale(0.8); }
+  }
+
+  @keyframes ghosts {
+    0% { transform: translate(0,0); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translate(var(--x), var(--y)); opacity:0; }
+  }
+
+/* NOUVEAU CSS pour les traits de mois dans la barre */
+.progress-bar-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* S'assurer qu'il est au-dessus du background, mais sous le fill */
+    opacity: 0.5; /* Rendre les traits moins dominants */
+    pointer-events: none; /* Ignorer les événements de souris */
+
+    /* Dessiner 12 traits espacés de 8.333% (100/12) */
+    background: repeating-linear-gradient(
+        to right,
+        #4CAF50,            /* Couleur du trait */
+        #4CAF50 1px,        /* Épaisseur du trait (1px) */
+        transparent 1px,
+        transparent 8.333%  /* Espace transparent entre les traits */
+    );
+    /* Décalage: le premier trait doit être invisible car il est à 0% (début de la barre) */
+    /* Cependant, pour simplifier, on laisse le premier trait à 0%, il sera masqué par le bord */
+}
+
+/* On s'assure que le fill de la barre est au-dessus des traits (z-index plus élevé) */
+.progress-bar-fill {
+    z-index: 2; /* Doit être au-dessus du ::before */
+    height: 100%;
+    width: 25%; /* valeur d'exemple, ajustable via JS */
+    background: linear-gradient(90deg, #ffcf98, #1b5e20);
+    transition: width 1s ease;
+}
 
 </style>
 </head>
 <body>
- <div class="stage">
-    <div class="controls">
-      <div class="control-note">Test: forcer un mois →</div>
-      <select id="testMonth">
-        <option value="">(mois réel)</option>
-        <option value="0">Janvier</option>
-        <option value="1">Février</option>
-        <option value="2">Mars</option>
-        <option value="3">Avril</option>
-        <option value="4">Mai</option>
-        <option value="5">Juin</option>
-        <option value="6">Juillet</option>
-        <option value="7">Août</option>
-        <option value="8">Septembre</option>
-        <option value="9">Octobre</option>
-        <option value="10">Novembre</option>
-        <option value="11">Décembre</option>
-      </select>
-      <button id="resetTest">Réinitialiser</button>
-    </div>
 
-    <div class="timeline" id="timeline">
-      <div class="progress-bar-wrapper">
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" id="progressFill"></div>
-        </div>
-      </div>
-
-      <!-- month labels (positioned relative to timeline width, using left%) -->
-      <!-- we'll also insert inline svgs into .month-svg-wrapper elements created by JS -->
-      <div class="month-label" style="left:0%;">Jan</div>
-      <div class="month-label" style="left:8.3%;">Fév</div>
-      <div class="month-label" style="left:16.6%;">Mar</div>
-      <div class="month-label" style="left:25%;">Avr</div>
-      <div class="month-label" style="left:33.3%;">Mai</div>
-      <div class="month-label" style="left:41.6%;">Juin</div>
-      <div class="month-label" style="left:50%;">Juil</div>
-      <div class="month-label" style="left:58.3%;">Août</div>
-      <div class="month-label" style="left:66.6%;">Sep</div>
-      <div class="month-label" style="left:75%;">Oct</div>
-      <div class="month-label" style="left:83.3%;">Nov</div>
-      <div class="month-label" style="left:91.6%;">Déc</div>
-
-      <!-- placeholder for icons will be inserted here by JS -->
-      <!-- envelope element -->
-      <div class="envelope" id="envelope">✉️</div>
-    </div>
+<div class="timeline-container">
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill"></div>
   </div>
 
+  <!-- Mois avec enveloppe et animation -->
+  <div class="month-label" style="left:4.166%">Janvier
+    <div class="month-animation" data-month="january"></div>
+  </div>
+  <div class="month-label" style="left:12.5%">Février
+    <div class="month-animation" data-month="february"></div>
+  </div>
+  <div class="month-label" style="left:20.833%">Mars
+    <div class="month-animation" data-month="march"></div>
+  </div>
+  <div class="month-label" style="left:29.166%">Avril
+    <div class="month-animation" data-month="april"></div>
+  </div>
+  <div class="month-label" style="left:37.5%">Mai
+    <div class="month-animation" data-month="may"></div>
+  </div>
+  <div class="month-label" style="left:45.833%">Juin
+    <div class="month-animation" data-month="june"></div>
+  </div>
+  <div class="month-label" style="left:54.166%">Juillet
+    <div class="month-animation" data-month="july"></div>
+  </div>
+  <div class="month-label" style="left:62.5%">Août
+    <div class="month-animation" data-month="august"></div>
+  </div>
+  <div class="month-label" style="left:70.833%">Septembre
+    <div class="month-animation" data-month="september"></div>
+  </div>
+  <div class="month-label" style="left:79.166%">Octobre
+    <div class="month-animation" data-month="october"></div>
+  </div>
+  <div class="month-label" style="left:87.5%">Novembre
+    <div class="month-animation" data-month="november"></div>
+  </div>
+  <div class="month-label" style="left:95.833%">Décembre
+    <div class="month-animation" data-month="december"></div>
+  </div>
+</div>
+
 <script>
-/*
-  Behavior:
-  - Fetch assets/months/<monthname>.svg for each month name (lowercase)
-  - Insert inline SVG into a wrapper placed at left: monthPercentages[i]%
-  - Recolor each SVG's paths to a chosen month color (by setting style.fill)
-  - Add an animation class for the active/current month
-  - Add small decorative particles (stars, petals, flakes, waves) for certain months
-*/
+const MONTH_EFFECTS = {
+  january: { svg: 'assets/months/january.svg', copies: 5, animation: 'snow', color: '#B3E5FC' }, // Bleu ciel },
+  february:{ svg: 'assets/months/february.svg', copies: 4, animation: 'hearts', color: '#eb81d9' }, // Rose },
+  march:   { svg: 'assets/months/march.svg', copies: 3, animation: 'petals', color: '#d45776' }, // Rouge pâle },
+  april:   { svg: 'assets/months/april.svg', copies: 3, animation: 'rain', color: '#1f4094' }, // Bleu foncé },
+  may:     { svg: 'assets/months/may.svg', copies: 4, animation: 'petals', color: '#41a321' }, // Vert },
+  june:    { svg: 'assets/months/june.svg', copies: 2, animation: 'petals', color: '#99e8df' }, // Turquoise },
+  july:    { svg: 'assets/months/july.svg', copies: 1, animation: 'sunbeams', color: '#ffe417' }, // Jaune },
+  august:  { svg: 'assets/months/august.svg', copies: 1, animation: 'waves', color: '#0069fc' }, // Bleu Océan },
+  september:{svg: 'assets/months/september.svg', copies: 3, animation: 'leaves', color: '#b86637' }, // Orange },
+  october: { svg: 'assets/months/october.svg', copies: 3, animation: 'ghosts', color: '#9c9c9c' }, // Gris },
+  november:{ svg: 'assets/months/november.svg', copies: 3, animation: 'leaves', color: '#c4b391' }, // Orange grisé },
+  december:{ svg: 'assets/months/december.svg', copies: 10, animation: 'stars', color: '#f2bf50' }, // Doré }
+};
 
-// month filenames must match what you confirmed
-const monthFiles = [
-  'january.svg','february.svg','march.svg','april.svg',
-  'may.svg','june.svg','july.svg','august.svg',
-  'september.svg','october.svg','november.svg','december.svg'
-];
-
-// left positions (approx) along the timeline width
-const monthPercentages = [0,8.3,16.6,25,33.3,41.6,50,58.3,66.6,75,83.3,91.6];
-
-// color palette per month (you can change)
-const monthColors = [
-  '#8ccff7', // Jan - icy blue
-  '#ff9fb1', // Feb - heart pink
-  '#ff6fa3', // Mar - petal pink
-  '#9ad0f5', // Apr - watering / rain blue
-  '#9be7a8', // May - fresh green
-  '#ffd479', // Jun - warm light
-  '#ffd166', // Jul - sunny yellow
-  '#7fd3ff', // Aug - sea blue
-  '#c9a16b', // Sep - warm leaf
-  '#b5a3ff', // Oct - spooky purple
-  '#f6d6a7', // Nov - candle warm
-  '#ffeaa7'  // Dec - star gold-ish
-];
-
-// utilities
-function fetchText(path){ return fetch(path).then(r => { if(!r.ok) throw new Error('SVG fetch failed: '+path); return r.text() }); }
-
-// convert a blob of svg text into a DOM node safely
-function svgTextToElement(svgText){
+// Fonction pour charger un SVG, l’injecter inline, et appliquer une couleur
+async function loadSVG(url, color = 'currentColor') {
+  const response = await fetch(url);
+  const text = await response.text();
   const parser = new DOMParser();
-  const doc = parser.parseFromString(svgText, 'image/svg+xml');
-  const svg = doc.documentElement;
-  // remove width/height attributes to allow CSS sizing, keep viewBox
-  svg.removeAttribute('width');
-  svg.removeAttribute('height');
+  const doc = parser.parseFromString(text, "image/svg+xml");
+  const svg = doc.querySelector('svg');
+  
+  if (!svg) return null;
+
+  svg.setAttribute('width', '20px');
+  svg.setAttribute('height', '20px');
+  
+  // --- NOUVEAU : Application et Forçage de la couleur ---
+  const graphicElements = svg.querySelectorAll('path, circle, rect, polygon, polyline');
+  
+  graphicElements.forEach(el => {
+    // 1. SUPPRIMER les attributs de couleur existants pour éviter les conflits de priorité
+    //    Ceci est la clé pour forcer le changement.
+    el.removeAttribute('fill');
+    el.removeAttribute('stroke');
+    
+    // 2. Appliquer la nouvelle couleur via style.fill (ou style.stroke si nécessaire)
+    //    Nous définissons la couleur ici.
+
+    // Si l'élément est destiné à être rempli, appliquez la couleur 'fill'
+    if (el.tagName !== 'polyline' && el.tagName !== 'line') {
+       el.style.fill = color;
+    } 
+    
+    // Si l'élément est destiné à avoir une bordure (stroke), appliquez la couleur 'stroke'
+    el.style.stroke = color; 
+    
+    // Assurez-vous que l'opacité est complète si le SVG l'a baissée
+    el.style.opacity = 1;
+  });
+  
+  // Si le SVG est simple et n'a pas d'éléments internes, on fixe la couleur sur le SVG lui-même:
+  if (graphicElements.length === 0) {
+      svg.style.color = color; 
+  }
+  // ---------------------------------------------
+  
   return svg;
 }
 
-// recolor inline svg: set fill on paths/shapes; but keep strokes if present
-function recolorSvg(svgEl, color){
-  // set currentColor approach: set svgEl.style.color and set shapes to use currentColor if possible
-  svgEl.style.color = color;
-  // For each element with fill attribute, overwrite with color
-  const fillables = svgEl.querySelectorAll('[fill]');
-  fillables.forEach(el => {
-    // skip if fill is 'none'
-    if(el.getAttribute('fill') && el.getAttribute('fill').toLowerCase() !== 'none'){
-      el.setAttribute('fill', color);
-    }
-  });
-  // also update inline styles
-  const styled = svgEl.querySelectorAll('[style]');
-  styled.forEach(el => {
-    // if style contains fill:, replace it
-    const st = el.getAttribute('style');
-    if(st && /fill\s*:/.test(st)){
-      const newst = st.replace(/fill\s*:\s*[^;]+;?/, `fill:${color};`);
-      el.setAttribute('style', newst);
-    }
-  });
-  // set stroke if present and black -> tint slightly darker
-  const strokables = svgEl.querySelectorAll('[stroke]');
-  strokables.forEach(el => {
-    const strokeVal = el.getAttribute('stroke');
-    if(strokeVal && strokeVal !== 'none'){
-      el.setAttribute('stroke', color);
-    }
-  });
-}
-
-async function inlineAllMonthSvgs(container){
-  const svgCache = [];
-  for(let i=0;i<monthFiles.length;i++){
-    const path = `assets/months/${monthFiles[i]}`;
-    try{
-      const text = await fetchText(path);
-      svgCache.push(text);
-    }catch(err){
-      console.warn('Failed to fetch', path, err);
-      svgCache.push(null);
-    }
+// Générer animations pour chaque mois
+Object.keys(MONTH_EFFECTS).forEach(async month => {
+  const { svg: url, copies, animation, color } = MONTH_EFFECTS[month]; // Assurez-vous de déstructurer `color`
+  const container = document.querySelector(`.month-animation[data-month="${month}"]`);
+  if (!container) return;
+  
+  // Passez la couleur au loadSVG
+  const svgTemplate = await loadSVG(url, color); 
+  
+  if (!svgTemplate) return; // Sécurité si le SVG n'a pas pu être chargé
+  
+  for (let i = 0; i < copies; i++) {
+    const clone = svgTemplate.cloneNode(true);
+    clone.style.setProperty('--x', (Math.random()*40 - 20)+'px');
+    clone.style.setProperty('--y', (Math.random()*40 - 20)+'px');
+    clone.style.animation = `${animation} ${4 + Math.random()*2}s linear infinite`;
+    container.appendChild(clone);
   }
-  // create wrappers and insert into timeline
-  const timeline = document.getElementById('timeline');
-
-  for(let i=0;i<12;i++){
-    const left = monthPercentages[i] + '%';
-
-    // wrapper for svg icon (positioned above month label)
-    const w = document.createElement('div');
-    w.className = 'month-svg-wrapper';
-    w.style.left = left;
-    w.dataset.monthIndex = i;
-
-    // if svg loaded, inline it
-    const raw = svgCache[i];
-    if(raw){
-      try{
-        const svgEl = svgTextToElement(raw);
-        // recolor
-        recolorSvg(svgEl, monthColors[i]);
-        // small default class
-        svgEl.classList.add('month-icon');
-        // append svg inline
-        w.appendChild(svgEl);
-      }catch(e){
-        console.error('SVG parse error', e);
-        // fallback: show an emoji if parse fails
-        w.textContent = '✳️';
-      }
-    }else{
-      w.textContent = '◻';
-    }
-
-    // insert wrapper into timeline (above everything)
-    timeline.appendChild(w);
-  }
-}
-
-// Add animations / decorative particles for a given month (index)
-function addMonthDecorations(monthIndex, activeOnly=false){
-  const timeline = document.getElementById('timeline');
-  const leftBase = monthPercentages[monthIndex];
-
-  // helper to create particle with randomized offset
-  function makeParticle(cls, count=8, color=null, spread=4, top=-48){
-    for(let k=0;k<count;k++){
-      const p = document.createElement('div');
-      p.className = cls;
-      if(color) p.style.background = color;
-      // random left variation in percent relative to leftBase
-      const xOffset = (Math.random()*spread) - (spread/2);
-      p.style.left = (leftBase + xOffset) + '%';
-      p.style.top = (top) + 'px';
-      p.style.opacity = 0;
-      p.style.animationDuration = (1.2 + Math.random()*1.8) + 's';
-      p.style.animationDelay = (Math.random()*1.0) + 's';
-      timeline.appendChild(p);
-    }
-  }
-
-  // Only create decoration if active month or if not activeOnly flag
-  const doIt = !activeOnly || (activeOnly && monthIndex===currentMonthForced);
-  // We'll allow adding decorations but keep them ephemeral (they loop but are harmless)
-
-  switch(monthIndex){
-    case 0: // Jan - flocons
-      makeParticle('janflake', 10, '#cfeeff', 6, -64);
-      break;
-    case 2: // Mar - petals
-      makeParticle('mar-petal', 10, '#ff69b4', 6, -64);
-      break;
-    case 4: // May - small buds (use float)
-      makeParticle('mar-petal', 8, '#9be7a8', 5, -60);
-      break;
-    case 7: // Aug - waves
-      // create a few vertical wave bars near icon
-      for(let n=0;n<4;n++){
-        const w = document.createElement('div');
-        w.className = 'aug-wave';
-        const xOffset = (Math.random()*6) - 3;
-        w.style.left = (leftBase + xOffset) + '%';
-        w.style.top = '-52px';
-        w.style.height = (12 + Math.random()*12) + 'px';
-        w.style.animationDelay = (Math.random()*0.6) + 's';
-        timeline.appendChild(w);
-      }
-      break;
-    case 8: // Sep - leaves (reuse petals brownish)
-      makeParticle('mar-petal', 10, '#c88f4f', 6, -64);
-      break;
-    case 11: // Dec - stars
-      makeParticle('dec-star', 14, 'gold', 8, -64);
-      break;
-    case 9: // Oct - ghost float (pulse)
-      // small ghosts could be faked by tiny white circles
-      makeParticle('mar-petal', 8, '#f3f4f6', 6, -60);
-      break;
-    default:
-      // nothing default
-      break;
-  }
-}
-
-// We'll allow forcing a month with the select, default to real current month
-let currentMonthForced = (new Date()).getMonth();
-
-async function init(){
-  await inlineAllMonthSvgs();
-
-  // set progress bar to year progress
-  const now = new Date();
-  const start = new Date(now.getFullYear(),0,1);
-  const end = new Date(now.getFullYear(),11,31);
-  const yearProgress = ((now - start) / (end - start)) * 100;
-  const fillEl = document.getElementById('progressFill');
-  fillEl.style.width = Math.max(0, Math.min(100, yearProgress)) + '%';
-
-  // position envelope above current month
-  positionEnvelopeFor(currentMonthForced);
-
-  // add base animations for all icons (soft float)
-  document.querySelectorAll('.month-svg-wrapper svg').forEach((svgEl, idx) => {
-    // give each a default subtle float
-    svgEl.classList.add('float-slow');
-    // give special extra animations by month
-    const idxMonth = parseInt(svgEl.closest('.month-svg-wrapper').dataset.monthIndex);
-    switch(idxMonth){
-      case 1: svgEl.classList.add('pulse-soft'); break; // feb heart pulse
-      case 6: svgEl.classList.add('pulse-soft'); break; // july sun pulse
-      case 7: svgEl.classList.add('spin-slow'); break; // waves spin-ish
-      default: break;
-    }
-  });
-
-  // Add decorations for current (forced) month
-  addMonthDecorations(currentMonthForced, true);
-
-  // highlight the icon of the current month
-  const wrappers = Array.from(document.querySelectorAll('.month-svg-wrapper'));
-  wrappers.forEach(w => w.classList.remove('active'));
-  const activeWrapper = document.querySelector(`.month-svg-wrapper[data-month-index="${currentMonthForced}"]`);
-  if(activeWrapper) activeWrapper.classList.add('active');
-}
-
-// envelope placement: compute position relative to timeline width
-function positionEnvelopeFor(monthIndex){
-  const timeline = document.getElementById('timeline');
-  const envelope = document.getElementById('envelope');
-  const left = monthPercentages[monthIndex];
-  envelope.style.left = left + '%';
-  // ensure envelope visible AFTER left is set
-  setTimeout(()=> envelope.classList.add('show'), 60);
-}
-
-// Test / UI handlers
-document.getElementById('testMonth').addEventListener('change', (e)=>{
-  const v = e.target.value;
-  if(v===''){ // reset to real month
-    currentMonthForced = (new Date()).getMonth();
-  } else {
-    currentMonthForced = parseInt(v,10);
-  }
-  // clear old decorations
-  document.querySelectorAll('.dec-star, .mar-petal, .janflake, .aug-wave').forEach(n=>n.remove());
-  // reposition envelope and re-add decorations
-  positionEnvelopeFor(currentMonthForced);
-  addMonthDecorations(currentMonthForced, true);
-  // update active wrapper
-  document.querySelectorAll('.month-svg-wrapper').forEach(w=>w.classList.remove('active'));
-  const w = document.querySelector(`.month-svg-wrapper[data-month-index="${currentMonthForced}"]`);
-  if(w) w.classList.add('active');
 });
 
-document.getElementById('resetTest').addEventListener('click', ()=>{
-  document.getElementById('testMonth').value = '';
-  currentMonthForced = (new Date()).getMonth();
-  // clear decorations
-  document.querySelectorAll('.dec-star, .mar-petal, .janflake, .aug-wave').forEach(n=>n.remove());
-  positionEnvelopeFor(currentMonthForced);
-  addMonthDecorations(currentMonthForced, true);
-  document.querySelectorAll('.month-svg-wrapper').forEach(w=>w.classList.remove('active'));
-  const w = document.querySelector(`.month-svg-wrapper[data-month-index="${currentMonthForced}"]`);
-  if(w) w.classList.add('active');
-});
+// Fonction pour mettre à jour la barre de progression
+// Les positions des 1ers de chaque mois (en % de la barre)
+const MONTH_POSITIONS = [
+    0,          // Janvier (Mois 0)
+    8.333,      // Février (Mois 1)
+    16.666,     // Mars (Mois 2)
+    25,         // Avril (Mois 3)
+    33.333,     // Mai (Mois 4)
+    41.666,     // Juin (Mois 5)
+    50,         // Juillet (Mois 6)
+    58.333,     // Août (Mois 7)
+    66.666,     // Septembre (Mois 8)
+    75,         // Octobre (Mois 9)
+    83.333,     // Novembre (Mois 10)
+    91.666      // Décembre (Mois 11)
+];
 
-// kick off
-init().catch(err => console.error(err));
+// Tableau des noms de mois pour trouver l'élément HTML
+const MONTH_NAMES = [
+    'january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december'
+];
+
+
+function updateProgressBar() {
+    // 1. Déterminer le mois actuel
+    const now = new Date();
+    const currentMonthIndex = now.getMonth(); // 0 pour Janvier
+    const currentMonthName = MONTH_NAMES[currentMonthIndex]; // 'january'
+
+    // --- Gestion de la position de l'Enveloppe (1er du mois) ---
+    const envelopePositionPercentage = MONTH_POSITIONS[currentMonthIndex];
+    
+    const timelineContainer = document.querySelector('.timeline-container');
+    let cursor = document.getElementById('progress-cursor');
+
+    if (timelineContainer) {
+        // ... (Le code pour créer et positionner le curseur reste le même) ...
+        if (!cursor) {
+            cursor = document.createElement('div');
+            cursor.id = 'progress-cursor';
+            cursor.style.cssText = `
+                position: absolute;
+                top: -5px;
+                height: 50px;
+                width: 20px;
+                font-size: 24px;
+                text-align: center;
+                transition: left 0.5s ease;
+                pointer-events: none;
+                z-index: 10; 
+            `;
+            cursor.innerHTML = '✉️';
+            timelineContainer.appendChild(cursor);
+        }
+        cursor.style.left = `calc(${envelopePositionPercentage}% - 10px)`;
+        cursor.style.display = 'block';
+    }
+
+    // --- Gestion de l'Animation du Mois ---
+    
+    // Désactiver toutes les animations
+    document.querySelectorAll('.month-animation').forEach(el => {
+        el.classList.remove('active-month');
+    });
+
+    // Activer l'animation du mois en cours
+    const activeAnimationContainer = document.querySelector(`.month-animation[data-month="${currentMonthName}"]`);
+    if (activeAnimationContainer) {
+        activeAnimationContainer.classList.add('active-month');
+    }
+
+
+    // --- Mise à jour de la barre de progression (Remplissage) ---
+    
+    const currentYear = now.getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear + 1, 0, 1);
+    const totalTime = endOfYear.getTime() - startOfYear.getTime();
+    const elapsedTime = now.getTime() - startOfYear.getTime();
+    let percentage = (elapsedTime / totalTime) * 100;
+
+    const progressBarFill = document.querySelector('.progress-bar-fill');
+    if (progressBarFill) {
+        progressBarFill.style.width = `${percentage.toFixed(2)}%`;
+    }
+}
+
+// Assurez-vous d'appeler updateProgressBar après que les animations SVG aient été créées
+// (c'est-à-dire après le Object.keys(MONTH_EFFECTS).forEach(async month => { ... }); )
+// Si vous gardez le code d'origine, le `updateProgressBar()` à la fin du script est suffisant.
+updateProgressBar();
+
 </script>
+
 </body>
 </html>
