@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.65">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="fr"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1">&lt;title&gt;Barre de Lettres Magique&lt;/title&gt;</p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-family: 'Arial', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: #fef6f0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.timeline-container {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 80%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>max-width: 800px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: #ddd;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>box-shadow: 0 4px 10px rgba(0,0,0,0.1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Barre liquide avec dégradé plus vivant */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.progress {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: linear-gradient(90deg, #a29bfe, #6c5ce7, #74b9ff);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 30px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: width 2s ease-in-out;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Effet liquide : vague animée */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.progress::before {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>content: '';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>top: -25%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>left: -50%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width: 200%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height: 150%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>background: rgba(255,255,255,0.3);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>border-radius: 40%;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>animation: wave 3s infinite linear;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>@keyframes wave {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>0% { transform: translateX(0); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>50% { transform: translateX(25%); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>100% { transform: translateX(0); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Les mois */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.month {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>bottom: -25px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transform: translateX(-50%);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>/* Enveloppe animée */</p>
+<p class="p1"><span class="Apple-converted-space">  </span>.envelope {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>top: -50px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>font-size: 32px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>transition: opacity 1s ease-in-out;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>.envelope.show {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>opacity: 1;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>animation: bounce 1s ease-in-out;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>@keyframes bounce {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>0% { transform: translateY(-25px); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>50% { transform: translateY(0); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>100% { transform: translateY(-10px); }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="timeline-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="progress" id="progress"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Les mois --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 0%;"&gt;Jan&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 8.3%;"&gt;Fév&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 16.6%;"&gt;Mar&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 25%;"&gt;Avr&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 33.3%;"&gt;Mai&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 41.6%;"&gt;Juin&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 50%;"&gt;Juil&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 58.3%;"&gt;Août&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 66.6%;"&gt;Sep&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 75%;"&gt;Oct&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 83.3%;"&gt;Nov&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="month" style="left: 91.6%;"&gt;Déc&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Enveloppe animée --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="envelope" id="envelope"&gt;<span class="s1">✉️</span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const progress = document.getElementById('progress');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const envelope = document.getElementById('envelope');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const now = new Date();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const startOfYear = new Date(now.getFullYear(), 0, 1);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const endOfYear = new Date(now.getFullYear(), 11, 31);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const yearProgress = ((now - startOfYear) / (endOfYear - startOfYear)) * 100;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>progress.style.width = yearProgress + '%';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const monthPercentages = [0, 8.3, 16.6, 25, 33.3, 41.6, 50, 58.3, 66.6, 75, 83.3, 91.6];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const currentMonth = now.getMonth();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>envelope.style.left = monthPercentages[currentMonth] + '%';</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Icônes personnalisées par mois (exemples)</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const envelopes = [</p>
+<p class="p1"><span class="Apple-converted-space">    </span>'<span class="s1">❄️</span>', '<span class="s1">❤️</span>', '<span class="s1">🌸</span>', '<span class="s1">🌷</span>', '<span class="s1">🌼</span>', '<span class="s1">☀️</span>', '<span class="s1">🌞</span>', '<span class="s1">🍃</span>', '<span class="s1">🍁</span>', '<span class="s1">🎃</span>', '<span class="s1">🦌</span>', '<span class="s1">🎄</span>'</p>
+<p class="p1"><span class="Apple-converted-space">  </span>];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>envelope.textContent = envelopes[currentMonth];</p>
+<p class="p1"><span class="Apple-converted-space">  </span>envelope.classList.add('show');</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
