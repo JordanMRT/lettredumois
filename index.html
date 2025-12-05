@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>La Timeline Des Lettres</title>
 <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Seaweed+Script&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg: #faf5eb;      /* crème chaud */
@@ -210,10 +211,93 @@ body::before {
     transition: width 1s ease;
 }
 
+ .handwriting-container {
+            position: absolute;
+            top: 5%;
+            width: 50%;
+            max-width: 1200px;
+        }
+        
+        /* Applique la police Seaweed Script au SVG */
+        .handwriting-font {
+            font-family: 'Seaweed Script', cursive;
+            font-size: 70px; /* Taille du texte */
+        }
+        
+        /* --- Animation du CONTOUR (l'écriture) --- */
+        #writing-text-stroke {
+            fill: none; /* Toujours pas de remplissage pour cet élément */
+            stroke: #2c3e50; /* Couleur du trait d'écriture */
+            stroke-width: 3px;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            
+            /* Clé de l'animation : prépare l'effet de tracé */
+            stroke-dasharray: 4000;
+            stroke-dashoffset: 4000;
+            
+            /* Lance l'animation de tracé pendant 8 secondes */
+            animation: write-stroke 15s ease-in-out forwards;
+        }
+        
+        @keyframes write-stroke {
+            0% {
+                stroke-dashoffset: 4000;
+            }
+            100% {
+                stroke-dashoffset: 0; /* Le contour est tracé entièrement */
+            }
+        }
+        
+        /* --- Animation du REMPLISSAGE (l'effet de dévoilement de gauche à droite) --- */
+        /* Cet élément gère le remplissage après le tracé */
+        #writing-text-fill {
+            fill: #2c3e50; /* Le texte est rempli */
+            stroke: none; /* Pas de contour */
+            /* Le clipPath est utilisé pour masquer et dévoiler le remplissage */
+            clip-path: url(#fill-clip);
+        }
+
+        /* Anime la barre rectangulaire de dévoilement (le <rect> dans le <clipPath>) */
+        .fill-animation-rect {
+            /* Commence masqué à gauche (x=0, width=0) */
+            animation: fill-unveil 3s linear 0s forwards; 
+            /* Dure 2s, commence à 7.5s (un peu avant que l'écriture du contour se termine) */
+        }
+        
+        @keyframes fill-unveil {
+            from {
+                width: 0;
+            }
+            to {
+                width: 1000px; /* La largeur totale du viewBox pour dévoiler tout le texte */
+            }
+        }
+
 </style>
 </head>
 <body>
+<div class="handwriting-container">
+    <svg viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+        
+        <defs>
+            <clipPath id="fill-clip">
+                <rect x="0" y="0" width="0" height="150" class="fill-animation-rect"/>
+            </clipPath>
+        </defs>
 
+        <text id="writing-text-fill" x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" class="handwriting-font">
+            Le suivi des lettres du mois
+        </text>
+
+        <text id="writing-text-stroke" x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" class="handwriting-font">
+            Le suivi des lettres du mois
+        </text>
+
+    </svg>
+</div>
+
+  
 <div class="timeline-container">
   <div class="progress-bar-container">
     <div class="progress-bar-fill"></div>
@@ -370,14 +454,44 @@ function updateProgressBar() {
     const currentMonthIndex = now.getMonth(); // 0 pour Janvier
     const currentMonthName = MONTH_NAMES[currentMonthIndex]; // 'january'
 
-    // --- Gestion de la position de l'Enveloppe (1er du mois) ---
+    // --- Calcul du pourcentage total écoulé dans l'année (pour la barre) ---
+    const currentYear = now.getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear + 1, 0, 1);
+    const totalTime = endOfYear.getTime() - startOfYear.getTime();
+    const elapsedTime = now.getTime() - startOfYear.getTime();
+    let percentage = (elapsedTime / totalTime) * 100;
+
+    const progressBarFill = document.querySelector('.progress-bar-fill');
+    const finalWidth = `${percentage.toFixed(2)}%`; // Stocker la largeur finale
+
+    // ************************************************
+    // Animation de remplissage au chargement
+    // ************************************************
+    if (progressBarFill) {
+        // 1. DÉSACTIVER TEMPORAIREMENT la transition CSS (Déjà défini à 1s dans le CSS, on le maintient)
+        progressBarFill.style.transition = 'none';
+        
+        // 2. Définir la largeur initiale à 0%
+        progressBarFill.style.width = '0%';
+        
+        // 3. Réactiver la transition et définir la largeur finale après un petit délai
+        requestAnimationFrame(() => {
+            // Remet la transition sur la barre pour l'animation initiale
+            progressBarFill.style.transition = 'width 3s ease';
+            progressBarFill.style.width = finalWidth; // Déclenche l'animation
+        });
+    }
+
+    // --- Gestion de la position du Curseur (Enveloppe) ---
+    
+    // NOUVEAU : On utilise la position fixe du 1er du mois (ex: 8.333% pour Février)
     const envelopePositionPercentage = MONTH_POSITIONS[currentMonthIndex];
     
     const timelineContainer = document.querySelector('.timeline-container');
     let cursor = document.getElementById('progress-cursor');
 
     if (timelineContainer) {
-        // ... (Le code pour créer et positionner le curseur reste le même) ...
         if (!cursor) {
             cursor = document.createElement('div');
             cursor.id = 'progress-cursor';
@@ -388,18 +502,24 @@ function updateProgressBar() {
                 width: 20px;
                 font-size: 24px;
                 text-align: center;
-                transition: left 0.5s ease;
+                transition: none; /* Pas d'animation de déplacement pour la position fixe */
                 pointer-events: none;
                 z-index: 10; 
             `;
             cursor.innerHTML = '✉️';
             timelineContainer.appendChild(cursor);
         }
+        
+        // Positionnement du curseur sur le 1er du mois
+        // On soustrait 10px (la moitié de la largeur du curseur 20px) pour le centrer
         cursor.style.left = `calc(${envelopePositionPercentage}% - 10px)`;
         cursor.style.display = 'block';
+
+        // Important : On s'assure qu'il n'y ait pas de transition sur la position
+        cursor.style.transition = 'none'; 
     }
 
-    // --- Gestion de l'Animation du Mois ---
+    // --- Gestion de l'Animation du Mois (inchangé) ---
     
     // Désactiver toutes les animations
     document.querySelectorAll('.month-animation').forEach(el => {
@@ -411,26 +531,8 @@ function updateProgressBar() {
     if (activeAnimationContainer) {
         activeAnimationContainer.classList.add('active-month');
     }
-
-
-    // --- Mise à jour de la barre de progression (Remplissage) ---
-    
-    const currentYear = now.getFullYear();
-    const startOfYear = new Date(currentYear, 0, 1);
-    const endOfYear = new Date(currentYear + 1, 0, 1);
-    const totalTime = endOfYear.getTime() - startOfYear.getTime();
-    const elapsedTime = now.getTime() - startOfYear.getTime();
-    let percentage = (elapsedTime / totalTime) * 100;
-
-    const progressBarFill = document.querySelector('.progress-bar-fill');
-    if (progressBarFill) {
-        progressBarFill.style.width = `${percentage.toFixed(2)}%`;
-    }
 }
 
-// Assurez-vous d'appeler updateProgressBar après que les animations SVG aient été créées
-// (c'est-à-dire après le Object.keys(MONTH_EFFECTS).forEach(async month => { ... }); )
-// Si vous gardez le code d'origine, le `updateProgressBar()` à la fin du script est suffisant.
 updateProgressBar();
 
 </script>
